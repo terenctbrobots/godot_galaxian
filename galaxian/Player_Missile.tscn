@@ -14,9 +14,8 @@ animations = [ {
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 3.03677, 6.54733 )
 
-[node name="Missile" type="RigidBody2D"]
+[node name="Missile" type="Area2D"]
 collision_layer = 5
-gravity_scale = 0.0
 script = ExtResource( 2 )
 __meta__ = {
 "_edit_group_": true

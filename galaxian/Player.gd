@@ -41,10 +41,10 @@ func _on_MissileTimer_timeout():
 		
 	missile = Missile.instance()
 
-	if (parent):
-		parent.add_child(missile)
-	else:
-		add_child(missile)
+#	if (parent):
+#		parent.add_child(missile)
+#	else:
+	add_child(missile)
 	
 	missile.position = $MissilePosition.position
 #	missile.fire()
