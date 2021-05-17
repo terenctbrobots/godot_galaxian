@@ -1,0 +1,41 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://assets/sprites/ship.png" type="Texture" id=1]
+[ext_resource path="res://Player.gd" type="Script" id=2]
+[ext_resource path="res://Player_Missile.tscn" type="PackedScene" id=3]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 1 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="CapsuleShape2D" id=2]
+radius = 22.0066
+height = 2.34714
+
+[node name="Player" type="Area2D"]
+position = Vector2( 227.042, 275.814 )
+monitorable = false
+collision_mask = 11
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_group_": true
+}
+Missile = ExtResource( 3 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 2 )
+
+[node name="MissilePosition" type="Position2D" parent="."]
+position = Vector2( 0, -21 )
+
+[node name="MissileTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="MissileTimer" to="." method="_on_MissileTimer_timeout"]
