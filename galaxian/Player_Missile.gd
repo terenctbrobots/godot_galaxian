@@ -1,17 +1,21 @@
 extends Area2D
 
-var speed = 400
-var _fire = false
+signal enemy_hit_signal
 
-# Called when the node enters the scene tree for the first time.
+export var speed = 400
+var _fire = false
+var _main 
+
 func _ready():
-	pass
+	_main = get_parent().get_parent()
+	print(_main.name) 
 	
 func fire():
-	get_parent().add_child(self)
+	$CollisionShape2D.disabled = false
+	_main.add_child(self)
+	connect("enemy_hit_signal",_main,"enemy_hit")
 	_fire = true
 	
-
 func _process(delta):
 	if !_fire :
 		return
@@ -20,3 +24,8 @@ func _process(delta):
 
 	if global_position.y < 0:
 		queue_free()
+
+
+func _on_Missile_body_entered(body):
+	emit_signal("enemy_hit_signal",body)
+	queue_free()

@@ -2,13 +2,16 @@ extends Area2D
 
 export (PackedScene) var Missile
 export var speed = 400
+
+signal player_hit
+
 var screen_size
 var missile = null
-var parent
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	parent = get_parent()
+	connect("player_hit",get_parent(),"player_hit")	
 	screen_size = get_viewport_rect().size
 	$MissileTimer.start()
 
@@ -49,4 +52,9 @@ func _on_MissileTimer_timeout():
 	missile.position = $MissilePosition.position
 #	missile.fire()
 	
-	
+func _on_Player_body_entered(body):
+	emit_signal("player_hit")
+
+
+func _on_Player_area_entered(area):
+	print("Player area hit")	
