@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://Player.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Enemy_Missile.tscn" type="PackedScene" id=3]
+[ext_resource path="res://enemy_path_1.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Enemy.tscn" type="PackedScene" id=4]
 
 [node name="Main" type="Node"]
 script = ExtResource( 1 )
@@ -11,5 +12,11 @@ Player = ExtResource( 2 )
 [node name="StartPosition" type="Position2D" parent="."]
 position = Vector2( 240, 650 )
 
-[node name="Enemy_Missile" parent="." instance=ExtResource( 3 )]
-position = Vector2( 240, 400 )
+[node name="Enemy" parent="." instance=ExtResource( 4 )]
+position = Vector2( 44, 62 )
+rotation = 3.14159
+gravity = 0.0
+flight_path = NodePath("../EnemyPath")
+
+[node name="EnemyPath" parent="." instance=ExtResource( 3 )]
+position = Vector2( 93.6567, 130.167 )

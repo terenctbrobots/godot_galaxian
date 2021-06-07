@@ -13,12 +13,3 @@ func _process(delta):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
-
-
-func _on_Enemy_Missile_body_entered(body):
-	print("player hit")
-	
-
-
-func _on_Enemy_Missile_area_entered(area):
-	print("Player hit")

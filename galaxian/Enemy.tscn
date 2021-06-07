@@ -5,7 +5,10 @@
 [ext_resource path="res://assets/sprites/enemy_red.png" type="Texture" id=3]
 [ext_resource path="res://Enemy.gd" type="Script" id=4]
 
-[sub_resource type="SpriteFrames" id=1]
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 17.9701, 12.3967 )
+
+[sub_resource type="SpriteFrames" id=2]
 animations = [ {
 "frames": [ ExtResource( 1 ) ],
 "loop": true,
@@ -23,10 +26,7 @@ animations = [ {
 "speed": 5.0
 } ]
 
-[sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 17.9701, 12.3967 )
-
-[node name="Enemy" type="RigidBody2D"]
+[node name="Enemy" type="Area2D"]
 collision_layer = 2
 collision_mask = 5
 script = ExtResource( 4 )
@@ -34,11 +34,9 @@ __meta__ = {
 "_edit_group_": true
 }
 
-[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
-frames = SubResource( 1 )
-animation = "purple"
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource( 2 )
+shape = SubResource( 1 )
 
-[connection signal="body_entered" from="." to="." method="_on_Enemy_body_entered"]
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 2 )
+animation = "purple"

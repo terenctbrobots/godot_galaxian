@@ -44,9 +44,6 @@ func _on_MissileTimer_timeout():
 		
 	missile = Missile.instance()
 
-#	if (parent):
-#		parent.add_child(missile)
-#	else:
 	add_child(missile)
 	
 	missile.position = $MissilePosition.position
@@ -55,6 +52,5 @@ func _on_MissileTimer_timeout():
 func _on_Player_body_entered(body):
 	emit_signal("player_hit")
 
-
 func _on_Player_area_entered(area):
-	print("Player area hit")	
+	emit_signal("player_hit")

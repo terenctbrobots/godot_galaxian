@@ -1,0 +1,11 @@
+[gd_scene format=2]
+
+[node name="Path_1" type="Node2D"]
+
+[node name="0" type="Position2D" parent="."]
+
+[node name="1" type="Position2D" parent="."]
+position = Vector2( 75, 90 )
+
+[node name="2" type="Position2D" parent="."]
+position = Vector2( 130, 218 )
