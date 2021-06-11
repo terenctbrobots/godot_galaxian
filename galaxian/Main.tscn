@@ -1,22 +1,60 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://Player.tscn" type="PackedScene" id=2]
-[ext_resource path="res://enemy_path_1.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Enemy.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Enemy_Path_1.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Spawn_Row.gd" type="Script" id=4]
+[ext_resource path="res://Enemy_Path_2.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Enemy.tscn" type="PackedScene" id=6]
 
 [node name="Main" type="Node"]
 script = ExtResource( 1 )
+spawn_row = [ NodePath("Spawn_Row_1") ]
+enemy_paths_left = [ NodePath("EnemyPath_1"), NodePath("EnemyPath_2"), NodePath("EnemyPath_3"), NodePath("EnemyPath_Left_4"), NodePath("EnemyPath_Left_5") ]
+enemy_paths_right = [ NodePath("EnemyPath_Right_1"), NodePath("EnemyPath_Right_2"), NodePath("EnemyPath_Right_3"), NodePath("EnemyPath_Right_4"), NodePath("EnemyPath_Right_5") ]
 Player = ExtResource( 2 )
 
 [node name="StartPosition" type="Position2D" parent="."]
+visible = false
 position = Vector2( 240, 650 )
 
-[node name="Enemy" parent="." instance=ExtResource( 4 )]
-position = Vector2( 44, 62 )
-rotation = 3.14159
-gravity = 0.0
-flight_path = NodePath("../EnemyPath")
+[node name="EnemyPath_Left_1" parent="." instance=ExtResource( 3 )]
+position = Vector2( 30, 200 )
 
-[node name="EnemyPath" parent="." instance=ExtResource( 3 )]
-position = Vector2( 93.6567, 130.167 )
+[node name="EnemyPath_Left_2" parent="." instance=ExtResource( 3 )]
+position = Vector2( 70, 200 )
+
+[node name="EnemyPath_Left_3" parent="." instance=ExtResource( 3 )]
+position = Vector2( 110, 200 )
+
+[node name="EnemyPath_Left_4" parent="." instance=ExtResource( 3 )]
+position = Vector2( 150, 200 )
+
+[node name="EnemyPath_Left_5" parent="." instance=ExtResource( 3 )]
+position = Vector2( 190, 200 )
+
+[node name="EnemyPath_Right_1" parent="." instance=ExtResource( 5 )]
+position = Vector2( 450, 200 )
+
+[node name="EnemyPath_Right_2" parent="." instance=ExtResource( 5 )]
+position = Vector2( 410, 200 )
+
+[node name="EnemyPath_Right_3" parent="." instance=ExtResource( 5 )]
+position = Vector2( 370, 200 )
+
+[node name="EnemyPath_Right_4" parent="." instance=ExtResource( 5 )]
+position = Vector2( 330, 200 )
+
+[node name="EnemyPath_Right_5" parent="." instance=ExtResource( 5 )]
+position = Vector2( 290, 200 )
+
+[node name="Spawn_Row_1" type="Position2D" parent="."]
+position = Vector2( 50, 150 )
+script = ExtResource( 4 )
+EnemySpawn = ExtResource( 6 )
+spawn_count = 2
+
+[node name="RespawnTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="RespawnTimer" to="." method="_on_RespawnTimer_timeout"]

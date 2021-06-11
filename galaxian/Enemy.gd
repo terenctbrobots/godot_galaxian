@@ -1,6 +1,15 @@
 extends Area2D
 
+
+export var max_shots = 2
+export (PackedScene) var Missile
+export (PackedScene) var Explosion
+
 export (NodePath) var flight_path 
+
+var score = 0
+
+var shots_fired = 0
 var dive_start_speed = 100
 var dive_speed = 200
 var return_speed = 100
@@ -18,7 +27,8 @@ enum State { IDLE, DIVE_START, DIVING, RETURN }
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	screen_size = get_viewport().size
-	dive()
+	original_position = position
+#	dive()
 	
 func _process(delta):
 	var velocity = Vector2.ZERO
@@ -55,6 +65,9 @@ func _process(delta):
 			position += velocity
 		
 			if position.distance_to(next_position) < 2.0 :
+				if dive_points[dive_index].fire :
+					fire()
+				
 				dive_index+=1
 				
 				if dive_index < dive_points.size():
@@ -74,8 +87,8 @@ func _process(delta):
 			rotate(1.5 * PI)
 			
 func dive():
-	original_position = position
 	dive_index = 0
+	shots_fired = 0
 			
 	dive_points = get_node(flight_path).get_children()	
 
@@ -95,3 +108,15 @@ func dive():
 	look_at(dive_start_points[0])
 	rotate(-PI/2)		
 	next_position = dive_start_points[0]
+	
+func fire():
+	var missile = Missile.instance()
+	missile.position = position
+	get_parent().add_child(missile)
+	
+func explode(explosion_time):
+	var explosion = Explosion.instance()
+	get_parent().add_child(explosion)
+	explosion.position = position
+	explosion.explode(explosion_time)
+	queue_free()

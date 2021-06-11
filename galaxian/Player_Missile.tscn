@@ -30,4 +30,4 @@ playing = true
 shape = SubResource( 2 )
 disabled = true
 
-[connection signal="body_entered" from="." to="." method="_on_Missile_body_entered"]
+[connection signal="area_entered" from="." to="." method="_on_Missile_area_entered"]
