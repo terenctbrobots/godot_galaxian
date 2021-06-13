@@ -1,11 +1,13 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
-[ext_resource path="res://Player.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Enemy_Path_1.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Spawn_Row.gd" type="Script" id=4]
-[ext_resource path="res://Enemy_Path_2.tscn" type="PackedScene" id=5]
-[ext_resource path="res://Enemy.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Player/Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Enemy/Enemy_Path_1.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Enemy/Spawn_Row.gd" type="Script" id=4]
+[ext_resource path="res://Enemy/Enemy_Path_2.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Enemy/Enemy.tscn" type="PackedScene" id=6]
+[ext_resource path="res://UI/HUD.tscn" type="PackedScene" id=7]
+[ext_resource path="res://StarBackground.tscn" type="PackedScene" id=8]
 
 [node name="Main" type="Node"]
 script = ExtResource( 1 )
@@ -13,6 +15,8 @@ spawn_row = [ NodePath("Spawn_Row_1") ]
 enemy_paths_left = [ NodePath("EnemyPath_1"), NodePath("EnemyPath_2"), NodePath("EnemyPath_3"), NodePath("EnemyPath_Left_4"), NodePath("EnemyPath_Left_5") ]
 enemy_paths_right = [ NodePath("EnemyPath_Right_1"), NodePath("EnemyPath_Right_2"), NodePath("EnemyPath_Right_3"), NodePath("EnemyPath_Right_4"), NodePath("EnemyPath_Right_5") ]
 Player = ExtResource( 2 )
+
+[node name="StarBackground" parent="." instance=ExtResource( 8 )]
 
 [node name="StartPosition" type="Position2D" parent="."]
 visible = false
@@ -54,7 +58,9 @@ script = ExtResource( 4 )
 EnemySpawn = ExtResource( 6 )
 spawn_count = 2
 
-[node name="RespawnTimer" type="Timer" parent="."]
+[node name="GenericTimer" type="Timer" parent="."]
 one_shot = true
 
-[connection signal="timeout" from="RespawnTimer" to="." method="_on_RespawnTimer_timeout"]
+[node name="HUD" parent="." instance=ExtResource( 7 )]
+
+[connection signal="timeout" from="GenericTimer" to="." method="_on_GenericTimer_timeout"]
