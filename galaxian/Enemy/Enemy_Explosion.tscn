@@ -12,6 +12,7 @@ animations = [ {
 } ]
 
 [node name="Enemy_Explosion" type="Node2D"]
+scale = Vector2( 0.8, 0.8 )
 script = ExtResource( 1 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]

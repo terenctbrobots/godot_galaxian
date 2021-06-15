@@ -5,8 +5,6 @@ export var max_shots = 2
 export (PackedScene) var Missile
 export (PackedScene) var Explosion
 
-export (NodePath) var flight_path 
-
 var score = 0
 
 var shots_fired = 0
@@ -22,6 +20,7 @@ var screen_size
 var state
 var original_position
 
+enum EnemyType {BLUE, PURPLE, RED, YELLOW }
 enum State { IDLE, DIVE_START, DIVING, RETURN }
 
 # Called when the node enters the scene tree for the first time.
@@ -86,11 +85,24 @@ func _process(delta):
 			look_at(Vector2(position.x, position.y+10))
 			rotate(1.5 * PI)
 			
-func dive():
+func set_type(enemy_type):
+	if enemy_type == EnemyType.BLUE:
+		$AnimatedSprite.animation = "blue"
+	elif enemy_type == EnemyType.PURPLE:
+		$AnimatedSprite.animation = "purple"
+	elif enemy_type == EnemyType.RED :
+		$AnimatedSprite.animation = "red"
+	else :
+		$AnimatedSprite.animation = "yellow"
+			
+func can_dive():
+	return state == State.IDLE
+			
+func dive(flight_path):
 	dive_index = 0
 	shots_fired = 0
 			
-	dive_points = get_node(flight_path).get_children()	
+	dive_points = flight_path.get_children()	
 
 	dive_start_points=[]
 	var x_max
