@@ -41,12 +41,11 @@ func dive():
 	var end = enemy_group.size()
 	var step = 1
 
-	print("dive")
 # Randomly choose back to front	
-#	if randi() % 100 < 50:
-#		start = enemy_group.size() - 1
-#		end = 0
-#		step = -1
+	if randi() % 100 < 50:
+		start = enemy_group.size() - 1
+		end = 0
+		step = -1
 	
 	for n in range(start,end,step):
 		print(n)
@@ -56,7 +55,6 @@ func dive():
 			enemy.dive(flight_path)
 			return true
 		
-	print("No enemy to dive")	
 	return false
 	
 	

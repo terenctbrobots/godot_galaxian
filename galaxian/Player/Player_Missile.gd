@@ -2,13 +2,12 @@ extends Area2D
 
 signal enemy_hit(enemy)
 
-export var speed = 400
+var _speed = 400
 var _fire = false
 var _main 
 
-func _ready():
-	_main = get_parent().get_parent()
-	print(_main.name) 
+func _ready():	
+	_main = get_node("/root").get_child(0)
 	
 func fire():
 	$CollisionShape2D.disabled = false
@@ -20,7 +19,7 @@ func _process(delta):
 	if !_fire :
 		return
 		
-	position  += Vector2(0,-1) * delta * speed
+	position  += Vector2(0,-1) * delta * _speed
 
 	if global_position.y < 0:
 		queue_free()

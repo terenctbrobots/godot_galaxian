@@ -14,7 +14,7 @@ script = ExtResource( 1 )
 spawn_row = [ NodePath("Spawn_Row_1"), NodePath("Spawn_Row_2"), NodePath("Spawn_Row_3"), NodePath("Spawn_Row_4"), NodePath("Spawn_Row_5"), NodePath("Spawn_Row_6") ]
 Path_left = ExtResource( 3 )
 Path_right = ExtResource( 5 )
-Player = ExtResource( 2 )
+player = ExtResource( 2 )
 
 [node name="StarBackground" parent="." instance=ExtResource( 8 )]
 
@@ -25,40 +25,45 @@ position = Vector2( 240, 660 )
 position = Vector2( 240, 240 )
 script = ExtResource( 4 )
 EnemySpawn = ExtResource( 6 )
-spawn_x_spacing = 45
+pair_count = 5
+spawn_x_spacing = 40
 group_id = "enemy_1"
 
 [node name="Spawn_Row_2" type="Position2D" parent="."]
 position = Vector2( 240, 210 )
 script = ExtResource( 4 )
 EnemySpawn = ExtResource( 6 )
-spawn_x_spacing = 45
+pair_count = 5
+spawn_x_spacing = 40
 
 [node name="Spawn_Row_3" type="Position2D" parent="."]
 position = Vector2( 240, 180 )
 script = ExtResource( 4 )
 EnemySpawn = ExtResource( 6 )
-spawn_x_spacing = 45
+pair_count = 5
+spawn_x_spacing = 40
 
 [node name="Spawn_Row_4" type="Position2D" parent="."]
 position = Vector2( 240, 150 )
 script = ExtResource( 4 )
 EnemySpawn = ExtResource( 6 )
-spawn_x_spacing = 45
+pair_count = 4
+spawn_x_spacing = 40
 enemy_type = 1
 
 [node name="Spawn_Row_5" type="Position2D" parent="."]
 position = Vector2( 240, 120 )
 script = ExtResource( 4 )
 EnemySpawn = ExtResource( 6 )
-spawn_x_spacing = 45
+pair_count = 3
+spawn_x_spacing = 40
 enemy_type = 2
 
 [node name="Spawn_Row_6" type="Position2D" parent="."]
 position = Vector2( 240, 90 )
 script = ExtResource( 4 )
 EnemySpawn = ExtResource( 6 )
-spawn_x_spacing = 45
+spawn_x_spacing = 40
 enemy_type = 3
 
 [node name="GenericTimer" type="Timer" parent="."]

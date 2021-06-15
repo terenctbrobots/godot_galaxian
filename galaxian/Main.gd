@@ -6,27 +6,28 @@ export var number_of_paths = 5
 export (PackedScene) var Path_left
 export (PackedScene) var Path_right
 
-export (PackedScene) var Player
+export (PackedScene) var player
 
 enum State { START, PLAYING, NEXT, OVER }
 
-var player
-var score = 0
-var lives_left = 3
-var state
-var enemy_left = 0
-var half_screen_width 
+var _player
+var _score = 0
+var _lives_left = 3
+var _state
+var _enemy_left = 0
+var _half_screen_width 
+var _enemy_diving = 0
 
-var enemy_paths_left = []
-var enemy_paths_right = []
+var _enemy_paths_left = []
+var _enemy_paths_right = []
 
 func _ready():
 	randomize()
-	half_screen_width = get_viewport().size.x / 2
+	_half_screen_width = get_viewport().size.x / 2
 	
-	player = Player.instance()
-	player.position = $StartPosition.position
-	add_child(player)	
+	_player = player.instance()
+	_player.position = $StartPosition.position
+	add_child(_player)	
 
 	var left_position = $EnemyPath_Left.position
 	var right_position = $EnemyPath_Right.position
@@ -36,26 +37,26 @@ func _ready():
 		add_child(left)
 		left.position = left_position
 		left_position += Vector2(path_spacing,0)
-		enemy_paths_left.append(left)
+		_enemy_paths_left.append(left)
 		
 		var right = Path_right.instance()
 		add_child(right)
 		right.position = right_position
 		right_position -= Vector2(path_spacing,0)
-		enemy_paths_right.append(right)
+		_enemy_paths_right.append(right)
 	
 	game_start()
 	
 func game_start():
-	state = State.START
+	_state = State.START
 	for row in spawn_row:
-		enemy_left += get_node(row).spawn_enemy()
+		_enemy_left += get_node(row).spawn_enemy()
 		
 	$GenericTimer.start(1.0)
 
 func game_over():
 	$DiveTimer.stop()
-	state = State.OVER
+	_state = State.OVER
 	$HUD.message("Game Over")
 	$HUD.show()
 	
@@ -63,36 +64,49 @@ func next_level():
 	game_over()
 
 func enemy_hit(enemy):
-	enemy_left -= 1
-	score = score + enemy.score
-	$HUD.score(score)
+	_enemy_left -= 1
+	_score += enemy.score
+	$HUD.score(_score)
 	enemy.explode(1)
 	
-	if enemy_left == 0:
+	if _enemy_left == 0:
 		next_level()
 	
-func player_hit():
-	player.explode(1)
-	remove_child(player)
+func _player_hit(enemy):
+		
+	_player.explode(1)
+	remove_child(_player)
 	
-	lives_left = lives_left - 1
-	$HUD.lives(lives_left)
+	_lives_left -= 1
+	$HUD.lives(_lives_left)
 	
-	if lives_left == 0:
+	if _lives_left == 0:
 		game_over()
 	else:
 		$GenericTimer.start(2)		
+
+	if enemy.is_enemy():
+		enemy_hit(enemy)
+		
+func dive_start():
+	_enemy_diving += 1
+		
+func dive_end():
+	_enemy_diving -= 1
+	
+	if _enemy_diving == 0 and $DiveTimer.is_stopped():
+		$DiveTimer.start(5)
 		
 func find_closest_path(position):
 	var path_found
 	var path_array 
 	
-	if position.x < half_screen_width:
-		path_found = enemy_paths_left[0]
-		path_array = enemy_paths_left
+	if position.x < _half_screen_width:
+		path_found = _enemy_paths_left[0]
+		path_array = _enemy_paths_left
 	else:
-		path_found = enemy_paths_right[0]
-		path_array = enemy_paths_right
+		path_found = _enemy_paths_right[0]
+		path_array = _enemy_paths_right
 		
 	var distance = position.distance_to(path_found.position)
 		
@@ -106,13 +120,13 @@ func find_closest_path(position):
 	return path_found
 
 func _on_GenericTimer_timeout():
-	if state == State.PLAYING:
-		add_child(player)
-		player.position = $StartPosition.position
-	elif state == State.START:
+	if _state == State.PLAYING:
+		add_child(_player)
+		_player.position = $StartPosition.position
+	elif _state == State.START:
 		$HUD.hide()
-		$HUD.lives(lives_left)
-		state = State.PLAYING
+		$HUD.lives(_lives_left)
+		_state = State.PLAYING
 		$DiveTimer.start(5)
 
 func _on_DiveTimer_timeout():
