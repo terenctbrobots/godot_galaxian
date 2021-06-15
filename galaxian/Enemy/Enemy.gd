@@ -26,7 +26,7 @@ enum State { IDLE, DIVE_START, DIVING, RETURN }
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	screen_size = get_viewport().size
-	original_position = position
+	state = State.IDLE
 #	dive()
 	
 func _process(delta):
@@ -99,6 +99,7 @@ func can_dive():
 	return state == State.IDLE
 			
 func dive(flight_path):
+	original_position = position
 	dive_index = 0
 	shots_fired = 0
 			

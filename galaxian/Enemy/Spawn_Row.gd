@@ -8,6 +8,13 @@ export var group_id = "enemies"
 enum EnemyType {BLUE, PURPLE, RED, YELLOW }
 export (EnemyType) var enemy_type
 
+class SortX:
+	static func sort_ascending(a, b):
+		if a.position.x < b.position.x:
+			return true
+		
+		return false
+
 func spawn_enemy():
 	for n in range(0, pair_count):
 		var spawn = EnemySpawn.instance()
@@ -28,10 +35,28 @@ func spawn_enemy():
 		
 func dive():
 	var enemy_group = get_tree().get_nodes_in_group(group_id)
-	var enemy = enemy_group[0]
+	enemy_group.sort_custom(SortX, "sort_ascending")
 	
-	var flight_path = get_parent().find_closest_path(enemy.position)
+	var start = 0
+	var end = enemy_group.size()
+	var step = 1
+
+	print("dive")
+# Randomly choose back to front	
+#	if randi() % 100 < 50:
+#		start = enemy_group.size() - 1
+#		end = 0
+#		step = -1
 	
-	enemy.dive(flight_path)
+	for n in range(start,end,step):
+		print(n)
+		if enemy_group[n].can_dive():
+			var enemy = enemy_group[n]	
+			var flight_path = get_parent().find_closest_path(enemy.position)
+			enemy.dive(flight_path)
+			return true
+		
+	print("No enemy to dive")	
+	return false
 	
 	
