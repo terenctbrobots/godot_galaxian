@@ -26,7 +26,6 @@ var _original_position
 enum EnemyType {BLUE, PURPLE, RED, YELLOW }
 enum State { IDLE, DIVE_START, DIVING, RETURN }
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	var main = get_node("/root").get_child(0)
 	connect("dive_start",main,"dive_start")
