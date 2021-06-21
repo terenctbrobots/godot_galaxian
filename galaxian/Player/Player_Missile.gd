@@ -5,13 +5,17 @@ signal enemy_hit(enemy)
 var _speed = 400
 var _fire = false
 var _main 
+var _global_position
 
 func _ready():	
 	_main = get_node("/root").get_child(0)
 	
 func fire():
-	$CollisionShape2D.disabled = false
+	_global_position = global_position
+	get_parent().remove_child(self)
 	_main.add_child(self)
+	global_position = _global_position
+	$CollisionShape2D.disabled = false
 	connect("enemy_hit",_main,"enemy_hit")
 	_fire = true
 	

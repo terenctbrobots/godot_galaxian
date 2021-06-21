@@ -35,6 +35,7 @@ func _process(delta):
 		
 	if Input.is_action_pressed("ui_accept") and _missile:
 		_missile.fire()
+		$AudioFire.play()
 		_missile = null
 		$MissileTimer.start()
 		

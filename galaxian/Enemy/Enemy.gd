@@ -22,14 +22,15 @@ var _next_position
 var _screen_size
 var _state
 var _original_position
+var _main
 
 enum EnemyType {BLUE, PURPLE, RED, YELLOW }
 enum State { IDLE, DIVE_START, DIVING, RETURN }
 
 func _ready():
-	var main = get_node("/root").get_child(0)
-	connect("dive_start",main,"dive_start")
-	connect("dive_end",main,"dive_end")
+	_main = get_node("/root").get_child(0)
+	connect("dive_start",_main,"dive_start")
+	connect("dive_end",_main,"dive_end")
 	
 	_screen_size = get_viewport().size
 	_state = State.IDLE
@@ -138,7 +139,8 @@ func dive(flight_path):
 func fire():
 	var missile = Missile.instance()
 	missile.position = position
-	get_parent().add_child(missile)
+	_main.add_child(missile)
+	$AudioFire.play()
 	
 func explode(explosion_time):
 	# Decrease diving count
@@ -146,7 +148,7 @@ func explode(explosion_time):
 		emit_signal("dive_end")
 	
 	var explosion = Explosion.instance()
-	get_parent().add_child(explosion)
+	_main.add_child(explosion)
 	explosion.position = position
 	explosion.explode(explosion_time)
 	queue_free()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://assets/sprites/enemy_yellow.png" type="Texture" id=1]
 [ext_resource path="res://assets/sprites/enemy_purple.png" type="Texture" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://Enemy/Enemy_Missile.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Enemy/Enemy_Explosion.tscn" type="PackedScene" id=6]
 [ext_resource path="res://assets/sprites/enemy_blue.png" type="Texture" id=7]
+[ext_resource path="res://assets/audio/laserSmall_003.ogg" type="AudioStream" id=8]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 17.9701, 14.9668 )
@@ -51,5 +52,8 @@ shape = SubResource( 1 )
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 2 )
 animation = "yellow"
+
+[node name="AudioFire" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 8 )
 
 [connection signal="area_entered" from="." to="." method="_on_Enemy_area_entered"]
