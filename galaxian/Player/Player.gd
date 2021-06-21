@@ -9,15 +9,18 @@ signal player_hit(enemy)
 
 var _screen_size
 var _missile = null
+var _main
 
 func explode(explosion_timer):
 	var explosion = Explosion.instance()
-	get_parent().add_child(explosion)
+	_main.add_child(explosion)
 	explosion.position = position
 	explosion.explode(explosion_timer)
 
 func _ready():
-	connect("player_hit",get_parent(),"player_hit")	
+	_main = get_node("/root").get_child(0)
+
+	connect("player_hit",_main,"player_hit")	
 	_screen_size = get_viewport_rect().size
 	$MissileTimer.start()
 

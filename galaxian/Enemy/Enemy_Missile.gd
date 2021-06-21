@@ -13,9 +13,9 @@ func _process(delta):
 	if global_position.y > _screen_size.y:
 		queue_free()
 		
-func _on_Enemy_Missile_body_entered():
-	print("Missile body entered, destroy")
-	queue_free()
 
 func is_enemy():
 	return false
+
+func _on_Enemy_Missile_area_entered(area):
+	queue_free()

@@ -25,5 +25,5 @@ func _process(delta):
 		queue_free()
 
 func _on_Missile_area_entered(area):
-	print("Player missile hit "+area.name)
 	emit_signal("enemy_hit",area)
+	queue_free()

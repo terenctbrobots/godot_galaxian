@@ -36,7 +36,7 @@ func spawn_enemy():
 func dive():
 	var enemy_group = get_tree().get_nodes_in_group(group_id)
 	enemy_group.sort_custom(SortX, "sort_ascending")
-	
+
 	var start = 0
 	var end = enemy_group.size()
 	var step = 1
@@ -48,7 +48,6 @@ func dive():
 		step = -1
 	
 	for n in range(start,end,step):
-		print(n)
 		if enemy_group[n].can_dive():
 			var enemy = enemy_group[n]	
 			var flight_path = get_parent().find_closest_path(enemy.position)

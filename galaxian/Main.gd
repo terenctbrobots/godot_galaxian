@@ -8,7 +8,7 @@ export (PackedScene) var Path_right
 
 export (PackedScene) var player
 
-enum State { START, PLAYING, NEXT, OVER }
+enum State { START, PLAYING, RESPAWN, NEXT, OVER }
 
 var _player
 var _score = 0
@@ -17,6 +17,7 @@ var _state
 var _enemy_left = 0
 var _half_screen_width 
 var _enemy_diving = 0
+var _dive_timer = 5
 
 var _enemy_paths_left = []
 var _enemy_paths_right = []
@@ -26,8 +27,7 @@ func _ready():
 	_half_screen_width = get_viewport().size.x / 2
 	
 	_player = player.instance()
-	_player.position = $StartPosition.position
-	add_child(_player)	
+	spawn_player()
 
 	var left_position = $EnemyPath_Left.position
 	var right_position = $EnemyPath_Right.position
@@ -64,6 +64,7 @@ func next_level():
 	game_over()
 
 func enemy_hit(enemy):
+			
 	_enemy_left -= 1
 	_score += enemy.score
 	$HUD.score(_score)
@@ -72,8 +73,14 @@ func enemy_hit(enemy):
 	if _enemy_left == 0:
 		next_level()
 	
-func _player_hit(enemy):
+func player_hit(enemy):
+	
+	# Don't let anybody else dive until player respanws
+	if _enemy_diving > 0:
+		$DiveTimer.stop()	
 		
+	_state = State.RESPAWN
+	
 	_player.explode(1)
 	remove_child(_player)
 	
@@ -82,11 +89,15 @@ func _player_hit(enemy):
 	
 	if _lives_left == 0:
 		game_over()
-	else:
-		$GenericTimer.start(2)		
+	elif _enemy_diving == 0:
+		$GenericTimer.start(2)
 
 	if enemy.is_enemy():
 		enemy_hit(enemy)
+		
+func spawn_player():
+		add_child(_player)
+		_player.position = $StartPosition.position	
 		
 func dive_start():
 	_enemy_diving += 1
@@ -94,8 +105,10 @@ func dive_start():
 func dive_end():
 	_enemy_diving -= 1
 	
-	if _enemy_diving == 0 and $DiveTimer.is_stopped():
-		$DiveTimer.start(5)
+	if _enemy_diving == 0 and _state == State.RESPAWN:
+		spawn_player()
+		_state = State.PLAYING
+		$DiveTimer.start(_dive_timer)
 		
 func find_closest_path(position):
 	var path_found
@@ -121,14 +134,12 @@ func find_closest_path(position):
 
 func _on_GenericTimer_timeout():
 	if _state == State.PLAYING:
-		add_child(_player)
-		_player.position = $StartPosition.position
+		spawn_player()
 	elif _state == State.START:
 		$HUD.hide()
 		$HUD.lives(_lives_left)
 		_state = State.PLAYING
-		$DiveTimer.start(5)
+		$DiveTimer.start(_dive_timer)
 
 func _on_DiveTimer_timeout():
 	get_node(spawn_row[0]).dive()
-	$DiveTimer.stop()

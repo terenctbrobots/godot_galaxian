@@ -24,7 +24,7 @@ var _state
 var _original_position
 
 enum EnemyType {BLUE, PURPLE, RED, YELLOW }
-enum state { IDLE, DIVE_START, DIVING, RETURN }
+enum State { IDLE, DIVE_START, DIVING, RETURN }
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -33,13 +33,13 @@ func _ready():
 	connect("dive_end",main,"dive_end")
 	
 	_screen_size = get_viewport().size
-	_state = state.IDLE
+	_state = State.IDLE
 #	dive()
 	
 func _process(delta):
 	var velocity = Vector2.ZERO
 	
-	if _state == state.DIVE_START:
+	if _state == State.DIVE_START:
 		velocity = (_next_position - position).normalized() * _dive_start_speed * delta
 		position += velocity
 		
@@ -51,19 +51,19 @@ func _process(delta):
 				_next_position = _dive_points[_dive_index].global_position				
 				look_at(_next_position)
 				rotate(-PI/2)
-				_state = state.DIVING
+				_state = State.DIVING
 			else:
 				_next_position = _dive_start_points[_dive_index]
 				look_at(_next_position)
 				rotate(-PI/2)				
-	elif _state == state.DIVING:		
+	elif _state == State.DIVING:		
 		if _dive_index == _dive_points.size():
 			velocity = Vector2(0,1) * _dive_speed * delta
 			position += velocity
 
 			if position.y > _screen_size.y:
 				position = Vector2(position.x, -10)
-				_state = state.RETURN
+				_state = State.RETURN
 				look_at(_original_position)
 				rotate(-PI/2)
 		else :
@@ -83,12 +83,12 @@ func _process(delta):
 				else:
 					look_at(Vector2(position.x,_screen_size.y))
 					rotate(-PI/2)
-	elif _state == state.RETURN:
+	elif _state == State.RETURN:
 		velocity = (_original_position - position).normalized() * _return_speed * delta
 		position += velocity
 		
 		if position.distance_to(_original_position) < 1 :
-			_state = state.IDLE
+			_state = State.IDLE
 			emit_signal("dive_end")
 			z_index = 0
 			look_at(Vector2(position.x, position.y+10))
@@ -108,8 +108,8 @@ func is_enemy():
 	return true
 			
 func can_dive():
-	return _state == state.IDLE
-			
+	return _state == State.IDLE
+				
 func dive(flight_path):
 	emit_signal("dive_start")
 	_original_position = position
@@ -131,7 +131,7 @@ func dive(flight_path):
 		_dive_start_points.push_back(Vector2(position.x - (x_max/2),position.y-20))
 		_dive_start_points.push_back(Vector2(position.x - x_max,position.y))
 	
-	_state = state.DIVE_START
+	_state = State.DIVE_START
 	look_at(_dive_start_points[0])
 	rotate(-PI/2)		
 	_next_position = _dive_start_points[0]
@@ -142,7 +142,10 @@ func fire():
 	get_parent().add_child(missile)
 	
 func explode(explosion_time):
-	emit_signal("dive_end")
+	# Decrease diving count
+	if _state != State.IDLE:
+		emit_signal("dive_end")
+	
 	var explosion = Explosion.instance()
 	get_parent().add_child(explosion)
 	explosion.position = position
