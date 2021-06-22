@@ -9,6 +9,7 @@ signal dive_start
 signal dive_end
 
 var score
+var spawn_row
 
 var _shots_fired = 0
 var _dive_start_speed = 100
@@ -143,7 +144,7 @@ func fire():
 	$AudioFire.play()
 	
 func explode(explosion_time):
-	# Decrease diving count
+	spawn_row.remove(self)
 	if _state != State.IDLE:
 		emit_signal("dive_end")
 	

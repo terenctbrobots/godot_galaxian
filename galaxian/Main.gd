@@ -9,6 +9,7 @@ export (PackedScene) var Path_right
 export (PackedScene) var player
 
 enum State { START, PLAYING, RESPAWN, NEXT, OVER }
+enum AttackPhase { REGULAR, BOSS, AGRESSIVE }
 
 var _player
 var _score = 0
@@ -21,6 +22,8 @@ var _dive_timer = 5
 
 var _enemy_paths_left = []
 var _enemy_paths_right = []
+
+var _attack_rows = []
 
 func _ready():
 	randomize()
@@ -52,7 +55,15 @@ func game_start():
 	for row in spawn_row:
 		_enemy_left += get_node(row).spawn_enemy()
 		
+	_attack_rows.append(get_node(spawn_row[0]))
+	_attack_rows.append(get_node(spawn_row[1]))
+	_attack_rows.append(get_node(spawn_row[2]))
+		
 	$GenericTimer.start(1.0)
+	
+func remove_attack_row(row):
+	if _attack_rows.has(row):
+		_attack_rows.erase(row)
 
 func game_over():
 	$DiveTimer.stop()
@@ -141,5 +152,7 @@ func _on_GenericTimer_timeout():
 		_state = State.PLAYING
 		$DiveTimer.start(_dive_timer)
 
-func _on_DiveTimer_timeout():
-	get_node(spawn_row[0]).dive()
+func _on_DiveTimer_timeout():			
+	if _attack_rows.size() > 0:
+		var random_row = randi() % _attack_rows.size() 
+		_attack_rows[random_row].dive()
