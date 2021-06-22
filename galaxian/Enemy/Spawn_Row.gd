@@ -4,15 +4,20 @@ export (PackedScene) var EnemySpawn
 export var pair_count = 2
 export var spawn_x_spacing = 50
 export var enemy_score = 50
-export var group_id = "enemies"
 enum EnemyType {BLUE, PURPLE, RED, YELLOW }
 export (EnemyType) var enemy_type
+
+var attack_row = false
 
 var _enemy_group = []
 var _main
 
 func _ready():
 	_main = get_node("/root").get_child(0)
+	
+	if enemy_type == EnemyType.BLUE:
+		_main.add_attack_row(self)
+		attack_row = true
 
 class SortX:
 	static func sort_ascending(a, b):
@@ -50,7 +55,7 @@ func enemy_left():
 func remove(enemy):
 	_enemy_group.erase(enemy)
 	
-	if _enemy_group.size() == 0:
+	if  attack_row and _enemy_group.size() == 0:
 		_main.remove_attack_row(self)
 		
 func dive():
