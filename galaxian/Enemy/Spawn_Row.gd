@@ -57,9 +57,8 @@ func remove(enemy):
 	
 	if  attack_row and _enemy_group.size() == 0:
 		_main.remove_attack_row(self)
-		
-func dive():
 
+func find_end_enemy():
 	var start = 0
 	var end = _enemy_group.size()
 	var step = 1
@@ -72,9 +71,36 @@ func dive():
 	
 	for n in range(start,end,step):
 		if _enemy_group[n].can_dive():
-			var enemy = _enemy_group[n]	
-			var flight_path = get_parent().find_closest_path(enemy.position)
-			enemy.dive(flight_path)
-			return true
+			return _enemy_group[n]
+			
+	return null	
+	
+func get_wingmen(position, max_count):
+	var wingmen = []
+	var count = 0
+	
+	for enemy in _enemy_group:
+		if enemy.global_position.distance_to(position) <= 50:
+			wingmen.append(enemy)
+			count += 1
+			
+			if max_count == count:
+				return wingmen
+			
+	return wingmen	
 		
-	return false
+func dive():
+	var enemy = find_end_enemy()
+	
+	if enemy != null:
+		enemy.dive()
+	
+func dive_boss(wingmen_row):
+	var boss = find_end_enemy()
+	
+	if boss != null:
+		var formation = wingmen_row.get_wingmen(boss.position, 2)
+		boss.dive()
+		for wingman in formation:
+			wingman.dive()
+	

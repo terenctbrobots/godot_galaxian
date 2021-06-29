@@ -5,6 +5,8 @@ export (PackedScene) var Explosion
 
 export var speed = 350
 
+var can_move = false
+
 signal player_hit(enemy)
 
 var _screen_size
@@ -12,6 +14,7 @@ var _missile = null
 var _main
 
 func explode(explosion_timer):
+	can_move = false
 	var explosion = Explosion.instance()
 	_main.add_child(explosion)
 	explosion.position = position
@@ -26,6 +29,9 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if can_move == false:
+		return
+		
 	var velocity = Vector2()
 	
 	if Input.is_action_pressed("ui_right"):

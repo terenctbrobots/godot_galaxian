@@ -111,7 +111,9 @@ func is_enemy():
 func can_dive():
 	return _state == State.IDLE
 				
-func dive(flight_path):
+func dive():
+	var flight_path = _main.find_closest_path(position)
+	
 	emit_signal("dive_start")
 	_original_position = position
 	z_index = 1
