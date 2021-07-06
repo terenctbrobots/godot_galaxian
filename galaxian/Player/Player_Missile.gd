@@ -16,7 +16,8 @@ func fire():
 	_main.add_child(self)
 	global_position = _global_position
 	$CollisionShape2D.disabled = false
-	connect("enemy_hit",_main,"enemy_hit")
+	assert(connect("enemy_hit",_main,"enemy_hit")==0)
+		
 	_fire = true
 	
 func _process(delta):

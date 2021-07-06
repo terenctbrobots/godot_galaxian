@@ -17,5 +17,5 @@ func _process(delta):
 func is_enemy():
 	return false
 
-func _on_Enemy_Missile_area_entered(area):
+func _on_Enemy_Missile_area_entered():
 	queue_free()

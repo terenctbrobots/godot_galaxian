@@ -203,7 +203,7 @@ func random_dive(row_count):
 	var random_row = randi() % row_count
 	
 	for row in range(random_row, 0 , -1): 
-		if _attack_rows[random_row].dive():
+		if _attack_rows[row].dive():
 			break
 	
 

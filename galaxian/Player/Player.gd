@@ -15,11 +15,11 @@ var _main
 
 func explode(explosion_timer):
 	_can_move = false
+	$CollisionShape2D.set_deferred("disabled",true)
 	var explosion = Explosion.instance()
 	_main.add_child(explosion)
 	explosion.position = position
 	explosion.explode(explosion_timer)
-	$CollisionShape2D.disabled = true
 	
 func activate():
 	_can_move = true
@@ -27,8 +27,7 @@ func activate():
 
 func _ready():
 	_main = get_node("/root").get_child(0)
-
-	connect("player_hit",_main,"player_hit")	
+	assert(connect("player_hit",_main,"player_hit") == 0)
 	_screen_size = get_viewport_rect().size
 	$MissileTimer.start()
 

@@ -32,9 +32,8 @@ enum State { IDLE, DIVE_START, DIVING, RETURN }
 
 func _ready():
 	_main = get_node("/root").get_child(0)
-	connect("dive_start",_main,"dive_start")
-	connect("dive_end",_main,"dive_end")
-	
+	assert(connect("dive_start",_main,"dive_start") == 0)
+	assert(connect("dive_end",_main,"dive_end") == 0)	
 	_screen_size = get_viewport().size
 	_state = State.IDLE
 #	dive()
