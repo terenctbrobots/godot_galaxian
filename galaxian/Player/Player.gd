@@ -5,7 +5,7 @@ export (PackedScene) var Explosion
 
 export var speed = 350
 
-var can_move = false
+var _can_move = false
 
 signal player_hit(enemy)
 
@@ -14,11 +14,16 @@ var _missile = null
 var _main
 
 func explode(explosion_timer):
-	can_move = false
+	_can_move = false
 	var explosion = Explosion.instance()
 	_main.add_child(explosion)
 	explosion.position = position
 	explosion.explode(explosion_timer)
+	$CollisionShape2D.disabled = true
+	
+func activate():
+	_can_move = true
+	$CollisionShape2D.disabled = false
 
 func _ready():
 	_main = get_node("/root").get_child(0)
@@ -29,7 +34,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if can_move == false:
+	if _can_move == false:
 		return
 		
 	var velocity = Vector2()

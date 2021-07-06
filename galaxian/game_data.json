@@ -1,0 +1,14 @@
+{
+	"0": {
+		"dive_timer_start": 6.0,
+		"dive_timer_mid": 4.0,
+		"attack_phase_mid": 0.7,
+		"attack_phase_end": 0.3
+	},
+	"1": {
+		"dive_timer_start": 5.0,
+		"dive_timer_mid": 4.0,
+		"attack_phase_mid": 0.75,
+		"attack_phase_end": 0.4
+	}
+}

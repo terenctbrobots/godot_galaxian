@@ -8,7 +8,6 @@ export (PackedScene) var Explosion
 signal dive_start
 signal dive_end
 
-var score
 var spawn_row
 
 var _shots_fired = 0
@@ -24,6 +23,9 @@ var _screen_size
 var _state
 var _original_position
 var _main
+
+var _score
+var _score_multiplier = 2
 
 enum EnemyType {BLUE, PURPLE, RED, YELLOW }
 enum State { IDLE, DIVE_START, DIVING, RETURN }
@@ -104,6 +106,21 @@ func set_type(enemy_type):
 		$AnimatedSprite.animation = "red"
 	else :
 		$AnimatedSprite.animation = "yellow"
+		
+func set_score(score, multiplier):
+	_score = score
+	_score_multiplier = multiplier
+	
+func get_score():
+	if _state != State.IDLE:
+		return _score * _score_multiplier
+		
+	return _score
+	
+func set_speed_multiplier(multiplier):
+	_dive_speed *= multiplier
+	_return_speed *= multiplier
+	_dive_start_speed *= multiplier
 		
 func is_enemy():
 	return true

@@ -4,6 +4,9 @@ export (PackedScene) var EnemySpawn
 export var pair_count = 2
 export var spawn_x_spacing = 50
 export var enemy_score = 50
+export var enemy_score_multiplier = 2
+export var enemy_speed_multiplier:float = 1.0
+
 enum EnemyType {BLUE, PURPLE, RED, YELLOW }
 export (EnemyType) var enemy_type
 
@@ -30,7 +33,8 @@ class SortX:
 func spawn_enemy():
 	for n in range(0, pair_count):
 		var spawn = EnemySpawn.instance()
-		spawn.score = enemy_score
+		spawn.set_score(enemy_score, enemy_score_multiplier)
+		spawn.set_speed_multiplier(enemy_speed_multiplier)
 		spawn.spawn_row = self
 		spawn.set_type(enemy_type)
 		get_parent().add_child(spawn)
@@ -38,7 +42,7 @@ func spawn_enemy():
 		spawn.position = Vector2(position.x + spawn_x_spacing/2 + (n*spawn_x_spacing), position.y)
 
 		spawn = EnemySpawn.instance()
-		spawn.score = enemy_score
+		spawn.set_score(enemy_score, enemy_score_multiplier)
 		spawn.spawn_row = self
 		spawn.set_type(enemy_type)
 		_enemy_group.append(spawn)
@@ -94,6 +98,9 @@ func dive():
 	
 	if enemy != null:
 		enemy.dive()
+		return true
+		
+	return false
 	
 func dive_boss(wingmen_row):
 	var boss = find_end_enemy()

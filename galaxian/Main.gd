@@ -8,8 +8,8 @@ export (PackedScene) var Path_right
 
 export (PackedScene) var player
 
-enum State { START, PLAYING, RESPAWN, NEXT, OVER }
-enum AttackPhase { START, AGRESSIVE, END }
+enum State { START, PLAYING, RESPAWN, NEXT, OVER, ATTRACT }
+enum AttackPhase { START, MID, END }
 
 var _player
 var _score = 0
@@ -27,17 +27,22 @@ var _enemy_paths_right = []
 
 var _attack_rows = []
 var _phase
-var _stage_data
+var _game_data
 
 var _current_stage_data
 var _current_stage = 0
 
+var StageData 
+
+
 func _ready():
+	StageData = preload("res://StageData.gd")
+	
 	randomize()
 	_half_screen_width = get_viewport().size.x / 2
 	
 	var file = File.new()
-	file.open("res://stage_data.tres", File.READ)
+	file.open("res://game_data.json", File.READ)
 	
 	var content = file.get_as_text()
 	file.close()
@@ -47,9 +52,9 @@ func _ready():
 	if json_data.error != 0:
 		print("JSON Parse error")
 	else:	
-		_stage_data = json_data.result
+		_game_data = json_data.result
 	
-	_current_stage_data = _stage_data["0"]
+	_current_stage_data = StageData.new(_game_data["0"])
 	
 	_player = player.instance()
 	spawn_player()
@@ -103,17 +108,19 @@ func next_stage():
 	$HUD.message("Next Stage")
 	_current_stage += 1
 	
-	if _stage_data.has(str(_current_stage_data)):
-		_current_stage_data = _stage_data[str(_current_stage)]
+	if _game_data.has(str(_current_stage_data)):
+		_current_stage_data = StageData.new(_game_data[str(_current_stage)])
 		
 	$GenericTimer.start()
 	
 func set_attack_phase(new_phase):
 	match new_phase:
 		AttackPhase.START:
-			_dive_timer = 5
+			_dive_timer = _current_stage_data.dive_timer_start
+		AttackPhase.MID:
+			_dive_timer = _current_stage_data.dive_timer_mid 
 		AttackPhase.END:
-			_dive_timer = 3
+			_dive_timer = _current_stage_data.dive_timer_end
 			
 	_phase = new_phase
 
@@ -121,7 +128,7 @@ func enemy_hit(enemy):
 			
 	_enemy_left -= 1
 
-	_score += enemy.score
+	_score += enemy.get_score()
 	$HUD.score(_score)
 	enemy.explode(1)
 	
@@ -129,8 +136,10 @@ func enemy_hit(enemy):
 		next_stage()
 	else:
 		var enemy_percent = float(_enemy_left) / _enemy_total		
-		match enemy_percent:
-			0.7:
+		
+		if _phase == AttackPhase.START and enemy_percent <= _current_stage_data.attack_phase_mid:
+				set_attack_phase(AttackPhase.MID)
+		if _phase == AttackPhase.MID and enemy_percent <= _current_stage_data.attack_phase_end:
 				set_attack_phase(AttackPhase.END) 
 	
 func player_hit(enemy):
@@ -155,7 +164,7 @@ func player_hit(enemy):
 func spawn_player():
 		add_child(_player)
 		_player.position = $StartPosition.position	
-		_player.can_move = true
+		_player.activate()
 		
 func dive_start():
 	_enemy_diving += 1
@@ -189,6 +198,14 @@ func find_closest_path(position):
 			path_found = path_array[n]
 		
 	return path_found
+	
+func random_dive(row_count):
+	var random_row = randi() % row_count
+	
+	for row in range(random_row, 0 , -1): 
+		if _attack_rows[random_row].dive():
+			break
+	
 
 func _on_GenericTimer_timeout():
 	if _state == State.PLAYING:
@@ -205,9 +222,20 @@ func _on_GenericTimer_timeout():
 		
 
 func _on_DiveTimer_timeout():
-	if _phase == AttackPhase.START:
-		if _attack_rows.size() > 0:
-			var random_row = randi() % _attack_rows.size() 
-			_attack_rows[random_row].dive()
-	else:
-		get_node(spawn_row[5]).dive_boss(get_node(spawn_row[4]))
+	match _phase:
+		AttackPhase.START:
+			random_dive(3)
+		AttackPhase.MID:
+			var random_boss = randi() % 2
+			
+			if random_boss == 0:
+				get_node(spawn_row[5]).dive_boss(get_node(spawn_row[4]))
+			else:
+				random_dive(4)
+		AttackPhase.END:
+			var random_boss = randi() % 2
+
+			if random_boss == 0:
+				get_node(spawn_row[5]).dive_boss(get_node(spawn_row[4]))
+			else:
+				random_dive(5)
